@@ -20,6 +20,11 @@ android {
         }
     }
 
+    /**
+     *默认包含release、debug两种变体，可以通过create("customVariantName")新增变体
+     * release和debug两种写法，如debug{} getByName("debug") {}
+     * debug、release也可以缺省
+     */
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -28,6 +33,12 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        // 配置自定义类型的特定设置
+        create("mycustom"){
+
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -66,4 +77,19 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+/**
+ * 配置Build Variants展示哪些变体，variantBuilder.enable设置为true 展示 false隐藏。
+ * 展示所有变体会影响编译速度？考虑在真实项目中测试
+ */
+androidComponents {
+    beforeVariants(selector().all()) { variantBuilder ->
+        println("androidComponents variantBuilder.name:${variantBuilder.name}")
+        if ("mycustom" == variantBuilder.name) {
+            variantBuilder.enable = false
+        } else {
+            variantBuilder.enable = true
+        }
+    }
 }
